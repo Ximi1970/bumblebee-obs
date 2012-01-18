@@ -11,9 +11,7 @@ Note that you cannot disable the Intel GPU even with Bumblebee installed.
 Support for enabling and disabling the the nVidia card is in development.
 Please refer to section 'Power Management' below.
 
-Currently, Bumblebee has only been tested on Ubuntu and Arch Linux. Please join
-#bumblebee channel on Freenode if you wish to help testing and creating the
-installer.
+Currently, Bumblebee has only been tested on Ubuntu and Arch Linux.
 
 ----------------
 ## Installation
@@ -54,7 +52,7 @@ time before switching to a newer version:
 
 Then, you need to install VirtualGL > 2.2.1 (2.2.90 is advised) and nvidia driver.
 
-Tarballs can be found at https://github.com/Bumblebee-Project/Bumblebee/downloads
+Tarballs can be found at https://github.com/Ximi1970/bumblebee-obs/downloads
 Download the tarball named like bumblebee-VERSION.tar.gz, extract and install it:
 
 1. Download
@@ -69,15 +67,15 @@ Download the tarball named like bumblebee-VERSION.tar.gz, extract and install it
 
 Installation instructions for getting the code from git:
 
-    $ git clone git://github.com/Bumblebee-Project/Bumblebee.git
+    $ git clone git://github.com/Ximi1970/bumblebee-obs.git
 
 Users who want to test the development code should run:
 
-    $ git clone git://github.com/Bumblebee-Project/Bumblebee.git -b develop --depth 1
+    $ git clone git://github.com/Ximi1970/bumblebee-obs.git -b develop --depth 1
 
 Then in order to install:
 
-    $ cd Bumblebee
+    $ cd bumblebee-obs
     $ sudo ./install
 
 ---------
@@ -94,9 +92,9 @@ forget the '-a' option, you remove yourself from other groups. After adding
 yourself to the group, you need to re-login for the changes to apply.
 
 Applications can be started using bumblebee by prefixing it with optirun. For
-example, starting Firefox can be done with:
+example, starting glxgears can be done with:
 
-    optirun firefox
+    optirun glxgears
 
 --------------------
 ## Power Management
@@ -146,30 +144,25 @@ uninstall.
 ## Reporting bugs/problems
 ---------------------------
 
-First of all: If you have any problem, please read this article:
-https://github.com/Bumblebee-Project/Bumblebee/wiki/Reporting-Issues
-
-Then create a bug report package with the bumblebee-bugreport tool and open an
-issue on GitHub at https://github.com/Bumblebee-Project/Bumblebee/issues
+Please create a bug report package with the bumblebee-bugreport tool and open an
+issue on GitHub at https://github.com/Ximi1970/bumblebee-obs/issues
 
 --------------
 ## Developers
 --------------
 
-The current developers for Bumblebee are:
+The current developer for bumblebee-obs is:
+- Ximi1970
+
+Many thanks to the old developers of the original Bumblebee tree:
 - ArchangeGabriel
 - Lekensteyn
 - Samsagax
 - paulvriens
 - Ximi1970
-Check the https://github.com/Bumblebee-Project/Bumblebee/wiki/Developers page
-for developer information.
+You can find the original Bumblebee branch here: https://github.com/Bumblebee-Project
 
 ----------------
 ## Useful Links
 ----------------
 
-Status updates can be found here on twitter: https://twitter.com/Team_Bumblebee
-Commits are flooded here:               https://twitter.com/Bumblebee_Git
-You may also join the facebook group:   http://tinyurl.com/bumblebeefacebook
-Launchpad Team page:                    https://launchpad.net/~bumblebee
