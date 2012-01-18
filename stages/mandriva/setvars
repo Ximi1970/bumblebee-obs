@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+#
+
+# set the module path (only used by xorg.conf.nvidia)
+if $IS_64 ; then
+    XORG_MODULEPATH=/usr/lib64/nvidia/xorg/modules/updates,/usr/lib64/xorg/modules/updates,/usr/lib64/xorg/modules
+else
+    XORG_MODULEPATH=/usr/lib/nvidia/xorg/modules/updates,/usr/lib/xorg/modules/updates,/usr/lib/xorg/modules
+fi
+
+# set the service remove command
+CMD_SVC_REMOVE='chkconfig bumblebee off'
+
+# The Xorg server binary
+X_DAEMON="/etc/X11/X"

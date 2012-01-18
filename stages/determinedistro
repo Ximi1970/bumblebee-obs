@@ -8,6 +8,8 @@ elif grep -iq "Arch Linux" /etc/issue; then
     DISTRO=archlinux
 elif grep -iq "OpenSUSE" /etc/issue; then
     DISTRO=opensuse
+elif grep -iq "Mandriva" /etc/issue; then
+    DISTRO=mandriva
 elif grep -iq "Fedora" /etc/issue; then
     DISTRO=fedora
 elif grep -iq Debian /etc/issue; then
