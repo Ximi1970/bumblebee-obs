@@ -308,15 +308,18 @@ with the `bumblebee-bugreport` tool and
 Developers
 ----------
 
-The current Bumblebee developer is:
+The current bumblebee-obs developer is:
+
 - Ximi1970
 
-Many thanks to the original developers (in alphabetical order):
+Many thanks to the original Bumblebee developers (in alphabetical order):
+
 - ArchangeGabriel
 - Lekensteyn
 - paulvriens
 - Samsagax
 - Ximi1970
+
 Various people have also contributed patches and are listed on
 [Github][github-contribs].
 
