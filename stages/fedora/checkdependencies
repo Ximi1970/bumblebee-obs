@@ -1,0 +1,183 @@
+#!/bin/bash
+#
+#
+conflictingpackages=()
+
+dependencies=('VirtualGL')
+
+case "$DRIVER" in
+  nvidia)
+    dependencies[ ${#dependencies[@]} ]=dkms-nvidia
+    dependencies[ ${#dependencies[@]} ]=nvidia-compute
+    dependencies[ ${#dependencies[@]} ]=nvidia-compute-devel
+    dependencies[ ${#dependencies[@]} ]=x11-video-nvidia
+    dependencies[ ${#dependencies[@]} ]=x11-video-nvidia-devel
+    conflictingpackages=('x11-driver-video-nvidia-current' 'nvidia-current-kernel' 'nvidia-current' 'dkms-nvidia-current')
+    ;;
+  nouveau)
+    dependencies[ ${#dependencies[@]} ]=xorg-x11-driver-video-nouveau
+    conflictingpackages=('x11-driver-video-nvidia-current' 'nvidia-current-kernel' 'nvidia-current' 'dkms-nvidia-current')
+    ;;
+esac
+
+conflictingfiles=('/usr/bin/nvidia-uninstall')
+
+
+
+#
+# vars
+#
+failed=false
+fedora_version=$(cat /etc/issue | grep Fedora | cut -d' ' -f3)
+
+if $IS_64 ; then
+    arch=x86_64
+else
+    arch=i586
+fi
+
+#
+# funcs
+#
+pkg_is_installed() {
+    [[ -n $(rpm -qa $1*) ]]
+}
+
+#
+# main
+#
+
+#
+# Check for conflicting files
+#
+conflicts=()
+for filename in "${conflictingfiles[@]}" ; do
+    if [ -f "$filename" ] ; then
+        conflicts[${#conflicts[@]}]="$filename"
+    fi
+done
+
+if [ ${#conflicts[@]} -gt 0 ] ; then
+    #
+    # Bumblebee is unlikely to work with these conflicting files
+    #
+    echo "Conflicting files ${conflicts[*]}"
+
+    echo "These files need to be removed before installing this version."
+    echo "Please remove them by running:"
+
+    for conflict in "${conflicts[@]}" ; do
+        if [[ "$conflict" == "/usr/bin/nvidia-uninstall" ]] ; then
+            echo "    sudo /usr/bin/nvidia-uninstall -s"
+            echo "And reboot the computer."
+        fi
+    done
+
+    exit 4
+fi
+
+#
+# Check for conflicting packages
+#
+conflicts=()
+for package in "${conflictingpackages[@]}" ; do
+    if pkg_is_installed "$package" ; then
+        conflicts[${#conflicts[@]}]="$package"
+    fi
+done
+
+if [ ${#conflicts[@]} -gt 0 ] ; then
+    #
+    # Bumblebee is unlikely to work with these conflicting packages
+    #
+    echo "Conflicting packages: ${conflicts[*]}"
+
+    echo "These package need to be removed before installing this version."
+    echo "Please remove them by running:"
+
+    for conflict in "${conflicts[@]}" ; do
+        echo "    sudo rpm -e $conflict"
+    done
+
+    exit 4
+fi
+
+#
+# Check the dependencies
+#
+missing_dependencies=()
+for package in "${dependencies[@]}" ; do
+    if ! pkg_is_installed "$package" ; then
+        missing_dependencies[${#missing_dependencies[@]}]="$package"
+    fi
+done
+
+if [ ${#missing_dependencies[@]} -gt 0 ] ; then
+    #
+    # Bumblebee is unlikely to work with these missing dependencies
+    #
+    echo "Missing dependencies: ${missing_dependencies[*]}"
+    echo
+
+    #
+    #   Tell the user about missing repos when needed
+    #
+    for dependency in "${missing_dependencies[@]}" ; do
+        if [[ "$dependency" == "VirtualGL" ]] || [[ "$dependency" == "VirtualGL-devel" ]] ; then
+            if [[ "$(yum info $dependency 2>/dev/null | grep Packages)" == "" ]] ; then
+                if [[ "$(yum repolist | grep 'Bumblebee-unstable')" == "" ]] ; then
+                    echo "'$dependency' can be installed from the Bumblebee Unstable repository which can be added by running:"
+                    echo "    wget http://download.opensuse.org/repositories/home:/Bumblebee-Project:/Bumblebee-unstable/Fedora_$fedora_version/home:Bumblebee-Project:Bumblebee-unstable.repo"
+                    echo "    sudo cp -f home:Bumblebee-Project:Bumblebee-unstable.repo /etc/yum.repos.d/"
+                    echo
+                fi
+            fi
+        fi
+
+        if [[ "$dependency" == "dkms-nvidia" ]] || [[ "$dependency" == "x11-video-nvidia" ]] || [[ "$dependency" == "x11-video-nvidia-devel" ]] || [[ "$dependency" == "nvidia-compute" ]] || [[ "$dependency" == "nvidia-compute-devel" ]] ; then
+            if [[ "$(yum info $dependency 2>/dev/null | grep Packages)" == "" ]] ; then
+                if [[ "$(yum repolist | grep 'nVidia_latest')" == "" ]] ; then
+                    echo "nVidia drivers can be installed from the Bumblebee nVidia repository which can be added by running:"
+                    echo "    wget http://download.opensuse.org/repositories/home:/Bumblebee-Project:/nVidia:/latest/Fedora_$fedora_version/home:Bumblebee-Project:nVidia:latest.repo"
+                    echo "    sudo cp -f home:Bumblebee-Project:nVidia:latest.repo /etc/yum.repos.d/"
+                    echo
+                fi
+            fi
+        fi
+    done
+
+    #
+    #   Tell the user what to do when a depency is missing. 
+    #
+    echo "Update your package lists and install the dependencies by running:"
+    echo "    sudo yum clean all"
+
+    reboot=""
+    for dependency in "${missing_dependencies[@]}" ; do
+        if [[ "$dependency" == "dkms-nvidia" ]] ; then
+            echo "    sudo yum install dkms-nvidia"
+            echo "Please be patient, this can take a long time. The package needs to download"
+            echo "the original nVidia package from the nVidia server and"
+            echo "it will be stored in /usr/src."
+            reboot="yes"
+        else
+            echo "    sudo yum install $dependency"
+        fi
+    done
+
+    if [[ -n "$reboot" ]] ; then
+        echo "And reboot the computer."
+    fi
+    failed=true
+fi
+
+if pkg_is_installed bumblebee ; then
+    echo "The 'bumblebee' package is already installed (from a repository?)."
+    echo "The package needs to be removed before installing this version."
+    echo "Please remove it by running:"
+    echo "    sudo rpm -e bumblebee"
+    failed=true
+fi
+
+$failed && exit 4
+
