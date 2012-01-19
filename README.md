@@ -34,10 +34,6 @@ There are several ways to get bumblebee-obs:
 
 ### Using your Package Manager (stable, recommended if available)
 
-#### Ubuntu
-
-Needs new install instructions for the OBS install
-
 #### OpenSuSE
 
 1. Installing the nVidia drivers (optional but highly recommended):
@@ -79,10 +75,10 @@ Needs new install instructions for the OBS install
     ```shell
     sudo zypper refresh
     sudo zypper install dkms-nvidia
-    sudo zypper install x11-video-nvidia
-    sudo zypper install x11-video-nvidia-devel
     sudo zypper install nvidia-compute
     sudo zypper install nvidia-compute-devel
+    sudo zypper install x11-video-nvidia
+    sudo zypper install x11-video-nvidia-devel
     ```
 
     For 64bit systems add:
@@ -145,6 +141,74 @@ Needs new install instructions for the OBS install
 Or you can use Yast to add the repositories and packages.
 
 
+#### Fedora
+
+1. Installing the nVidia drivers (optional but highly recommended):
+    
+    Select the nVidia repository for your Fedora version:
+
+    - **Fedora 15**:
+
+        ```shell
+        wget http://download.opensuse.org/repositories/home:/Bumblebee-Project:/nVidia:/latest/Fedora_15/home:Bumblebee-Project:nVidia:latest.repo
+        sudo mv -f home:Bumblebee-Project:nVidia:latest.repo /etc/yum.repos.d/
+        ```
+
+    - **Fedora 16**:
+
+        ```shell
+        wget http://download.opensuse.org/repositories/home:/Bumblebee-Project:/nVidia:/latest/Fedora_16/home:Bumblebee-Project:nVidia:latest.repo
+        sudo mv -f home:Bumblebee-Project:nVidia:latest.repo /etc/yum.repos.d/
+        ```
+
+    Install the nVidia driver packages:
+
+    ```shell
+    sudo yum clean all
+    sudo yum install dkms-nvidia
+    sudo yum install nvidia-compute
+    sudo yum install nvidia-compute-devel
+    sudo yum install x11-video-nvidia
+    sudo yum install x11-video-nvidia-devel
+    ```
+
+
+2. Installing Bumblebee:
+
+    Select the Bumblebee repository for your Fedora version:
+
+    - **Fedora 15**:
+
+        ```shell
+        wget http://download.opensuse.org/repositories/home:/Bumblebee-Project:/Bumblebee/Fedora_15/home:Bumblebee-Project:Bumblebee-unstable.repo
+        sudo mv -f home:Bumblebee-Project:Bumblebee-unstable.repo /etc/yum.repos.d/
+        ```
+
+    - **Fedora 16**:
+
+        ```shell
+        wget http://download.opensuse.org/repositories/home:/Bumblebee-Project:/Bumblebee/Fedora_16/home:Bumblebee-Project:Bumblebee-unstable.repo
+        sudo mv -f home:Bumblebee-Project:Bumblebee-unstable.repo /etc/yum.repos.d/
+        ```
+
+    Install bumblebee package:
+
+    ```shell
+    sudo yum clean all
+    sudo yum install bumblebee
+    ```
+
+
+
+
+#### Ubuntu
+
+Needs new install instructions for the OBS install
+
+
+
+### Alternative repositories
+
 There are also some alternative repositories:
 
   - **Bumblebee-unstable**: [Bumblebee-unstable][opensuse-bumblebee-unstable]
@@ -154,6 +218,7 @@ There are also some alternative repositories:
         uses the latest cvs/svn/git packages of libturbojpeg and VirtualGL and
         the opensuse-dev branch.
 
+  [opensuse-bumblebee]:             http://download.opensuse.org/repositories/home:/Bumblebee-Project:/Bumblebee
   [opensuse-bumblebee-unstable]:    http://download.opensuse.org/repositories/home:/Bumblebee-Project:/Bumblebee-unstable
   [opensuse-bumblebee-develop]:     http://download.opensuse.org/repositories/home:/Bumblebee-Project:/Bumblebee-develop
 
@@ -243,20 +308,27 @@ Power Management
 Since version 2.4, we added back-end support for enabling/disabling the card.
 Please read [why ACPI was initially removed][acpi-removed], it will help you
 understand the current situation about power management. If you understand
-what it all means and wish to proceed, here is how to enable it:
+what it all means and wish to proceed, here is how to enable it. The package
+can be found in the Bumblebee OBS repository:
 
 1. You need to install the `acpi_call` module for your system.
+
+  - **openSuSE**:
+
+        ```shell
+        sudo zypper install dkms-acpi_call
+        ```
+
+  - **Fedora**:
+
+        ```shell
+        sudo yum install dkms-acpi_call
+        ```
 
   - **Ubuntu**: available in the Bumblebee OBS repository:
 
         ```shell
 Needs new instructions
-        ```
-
-  - **openSuSE**: available in the Bumblebee OBS repository:
-
-        ```shell
-        sudo zypper install dkms-acpi_call
         ```
 
 2. Edit `/etc/bumblebee/bumblebee.conf` and set power management to `Y`.
@@ -302,7 +374,7 @@ If a solution to your problem does not exist, create a bug report package
 with the `bumblebee-bugreport` tool and
 [open an issue on Github][github-issues].
 
-  [wiki-reporting-issues]: https://github.com/Bumblebee-Project/Bumblebee/wiki/Reporting-Issues
+  [wiki-reporting-issues]: https://github.com/Ximi1970/bumblebee-obs/wiki/Reporting-Issues
   [github-issues]:         https://github.com/Ximi1970/bumblebee-obs/issues
 
 Developers
